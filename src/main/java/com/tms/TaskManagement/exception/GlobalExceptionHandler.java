@@ -1,8 +1,6 @@
 package com.tms.TaskManagement.exception;
 
-import com.tms.TaskManagement.exception.custom.EmailAlreadyExistsException;
-import com.tms.TaskManagement.exception.custom.InvalidCredentialsException;
-import com.tms.TaskManagement.exception.custom.UserNotFound;
+import com.tms.TaskManagement.exception.custom.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -65,8 +63,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFound ex, HttpServletRequest request){
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex, HttpServletRequest request){
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Not found",
@@ -74,5 +72,27 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TeamNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTeamNotFound(TeamNotFoundException ex, HttpServletRequest request){
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Not found",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TeamAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleTeamExists(TeamAlreadyExistsException ex, HttpServletRequest request){
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }

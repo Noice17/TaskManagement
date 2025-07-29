@@ -2,14 +2,17 @@ package com.tms.TaskManagement.service.implementation;
 
 import com.tms.TaskManagement.dto.UserDTO;
 import com.tms.TaskManagement.dto.UserUpdateDTO;
+import com.tms.TaskManagement.entity.Team;
 import com.tms.TaskManagement.entity.User;
 import com.tms.TaskManagement.exception.custom.EmailAlreadyExistsException;
+import com.tms.TaskManagement.exception.custom.TeamNotFoundException;
+import com.tms.TaskManagement.exception.custom.UserNotFoundException;
 import com.tms.TaskManagement.mapper.UserMapper;
+import com.tms.TaskManagement.repository.TeamRepository;
 import com.tms.TaskManagement.repository.UserRepository;
 import com.tms.TaskManagement.service.UserService;
 import com.tms.TaskManagement.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +26,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageUtil messageUtil;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, MessageUtil messageUtil) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, MessageUtil messageUtil, TeamRepository teamRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.messageUtil = messageUtil;
+        this.teamRepository = teamRepository;
     }
 
 
@@ -40,8 +45,16 @@ public class UserServiceImpl implements UserService {
 
         User user = UserMapper.toEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        User saved = userRepository.save(user);
 
+        if(userDTO.getTeamId() != null){
+            Team team = teamRepository.findById(userDTO.getTeamId())
+                    .orElseThrow(() -> new TeamNotFoundException(
+                            messageUtil.getMessage("team.not_found", userDTO.getTeamId())
+                    ));
+            user.setTeam(team);
+        }
+
+        User saved = userRepository.save(user);
         return UserMapper.toDTO(saved);
     }
 
@@ -49,13 +62,22 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(Long id, UserUpdateDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException(messageUtil.getMessage("error.user.not_found", id))
+                        new UserNotFoundException(messageUtil.getMessage("error.user.not_found", id))
                 );
         if(userDTO.getUsername() != null) user.setUsername(userDTO.getUsername());
         if(userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
         if(userDTO.getPassword() != null && !userDTO.getPassword().isBlank()){
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
+
+        if(userDTO.getTeamId() != null){
+            Team team = teamRepository.findById(userDTO.getTeamId())
+                    .orElseThrow(() -> new TeamNotFoundException(
+                            messageUtil.getMessage("team.not_found", userDTO.getTeamId())
+                    ));
+            user.setTeam(team);
+        }
+
         if(userDTO.getRole() != null) user.setRole(userDTO.getRole());
 
         User updated = userRepository.save(user);
@@ -79,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if(!userRepository.existsById(id)){
-            throw new UsernameNotFoundException(messageUtil.getMessage("error.user.not_found",id));
+            throw new UserNotFoundException(messageUtil.getMessage("error.user.not_found",id));
         }
     }
 

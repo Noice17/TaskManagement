@@ -29,10 +29,12 @@ public class User {
     @Column(nullable = false, name="role")
     private UserRole role;
 
-//    private List<Task> tasks; implement when Task entity is created
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = true)
+    private Team team;
 
     @CreatedDate
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false, nullable = true)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
@@ -45,13 +47,19 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(String username, String email, String password, UserRole role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    }
+
+    public User(String username, String email, String password, UserRole role, Team team) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.team = team;
     }
 
     public Long getId() {
@@ -96,6 +104,14 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

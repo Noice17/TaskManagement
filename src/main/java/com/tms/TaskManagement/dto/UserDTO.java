@@ -1,5 +1,6 @@
 package com.tms.TaskManagement.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tms.TaskManagement.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,12 +19,15 @@ public class UserDTO {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank(message = "Password is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 8, max=20, message = "Password must be between 8 and 20 characters")
     private String password;
 
     @NotNull(message = "User status is required")
     private User.UserRole role;
+
+    private Long teamId;
+    private String teamName;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,14 +35,23 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String username, String email, String password, User.UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserDTO(Long id, String username, String email, User.UserRole role, Long teamId, String teamName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public UserDTO(String username, String email, String password, User.UserRole role, Long teamId) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.teamId = teamId;
     }
 
     public Long getId() {
@@ -79,6 +92,22 @@ public class UserDTO {
 
     public void setRole(User.UserRole role) {
         this.role = role;
+    }
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public LocalDateTime getCreatedAt() {

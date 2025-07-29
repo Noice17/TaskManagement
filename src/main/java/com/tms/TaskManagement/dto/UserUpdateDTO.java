@@ -8,16 +8,18 @@ public class UserUpdateDTO {
     private String username;
     private String email;
     private String password; // Optional
+    private Long teamId;
     private User.UserRole role;
 
     public UserUpdateDTO() {
     }
 
-    public UserUpdateDTO(String username, String email, String password, User.UserRole role) {
+    public UserUpdateDTO(String username, String email, String password, User.UserRole role, Long teamId) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.teamId = teamId;
     }
 
     public String getUsername() {
@@ -50,5 +52,13 @@ public class UserUpdateDTO {
 
     public void setRole(User.UserRole role) {
         this.role = role;
+    }
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
     }
 }
