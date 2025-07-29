@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name= "task")
+@Table(name="tasks")
 @EntityListeners(AuditingEntityListener.class)
 public class Task {
 
@@ -19,8 +19,8 @@ public class Task {
     @Column(name = "task_id")
     private Long id;
 
-    @Column(nullable = false)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY) //map task to user REQUIRED
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)

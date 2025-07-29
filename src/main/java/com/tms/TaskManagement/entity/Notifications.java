@@ -13,16 +13,16 @@ public class Notifications {
     @Column(name = "notification_id")
     private Long id;
 
-    @Column(nullable = false)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     /*@Column(nullable = false)
     @JoinColumn(name = "team_id")
     private Team team;*/
 
-    @Column(nullable = false)
-    @JoinColumn(name = "task_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
     @Column(nullable = false)
@@ -30,7 +30,13 @@ public class Notifications {
 
     public Notifications() {}
 
-//    public Notifications(Long id, User user, Team team, Task task, String description) {
+    public Notifications(User user, Task task, String description) {
+        this.user = user;
+        this.task = task;
+        this.description = description;
+    }
+
+    //    public Notifications(Long id, User user, Team team, Task task, String description) {
 //        this.id = id;
 //        this.user = user;
 //        this.team = team;
