@@ -18,6 +18,7 @@ public class TaskDTO {
     private Task.TaskStatus status;
 
     private Long userId; //added this to take userId as input
+    private String userName;
 
     @NotBlank(message = "task due date is required")
     private LocalDateTime dueDate;
@@ -27,7 +28,7 @@ public class TaskDTO {
 
     public TaskDTO() {}
 
-    public TaskDTO(Long id, String taskName, String taskDescription, Task.TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId) {
+    public TaskDTO(Long id, String taskName, String taskDescription, Task.TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId, String userName) {
         this.id = id;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -36,6 +37,7 @@ public class TaskDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userId = userId;
+        this.userName = userName;
     }
 
     public Long getId() {
@@ -100,5 +102,13 @@ public class TaskDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

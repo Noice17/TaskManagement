@@ -6,8 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.management.Notification;
+import java.util.List;
 
 @Repository
 public interface NotificationsRepository extends JpaRepository<Notifications, Long> {
-    boolean existsById(Long id);
+//    List<Notifications> getAllNotifications();
+    List<Notifications> findByUserId(Long userId);
+    List<Notifications> findByTeamId(Long teamId);
+    List<Notifications> findByTaskId(Long taskId);
 }
