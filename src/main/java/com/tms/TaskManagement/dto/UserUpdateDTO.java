@@ -10,16 +10,18 @@ public class UserUpdateDTO {
     private String password; // Optional
     private Long teamId;
     private User.UserRole role;
+    private String avatarUrl;
 
     public UserUpdateDTO() {
     }
 
-    public UserUpdateDTO(String username, String email, String password, User.UserRole role, Long teamId) {
+    public UserUpdateDTO(String username, String email, String password, User.UserRole role, Long teamId, String avatarUrl) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
         this.teamId = teamId;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getUsername() {
@@ -60,5 +62,13 @@ public class UserUpdateDTO {
 
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

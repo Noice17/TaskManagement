@@ -60,7 +60,7 @@ public class TeamController {
     }
 
     //Update
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> updateTeam(
             @PathVariable Long id,

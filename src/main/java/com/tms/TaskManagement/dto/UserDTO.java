@@ -29,6 +29,8 @@ public class UserDTO {
     private Long teamId;
     private String teamName;
 
+    private String avatarUrl;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -52,6 +54,19 @@ public class UserDTO {
         this.password = password;
         this.role = role;
         this.teamId = teamId;
+    }
+
+    public UserDTO(Long id, String username, String email, String password, User.UserRole role, Long teamId, String teamName, String avatarUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.avatarUrl = avatarUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -108,6 +123,14 @@ public class UserDTO {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public LocalDateTime getCreatedAt() {

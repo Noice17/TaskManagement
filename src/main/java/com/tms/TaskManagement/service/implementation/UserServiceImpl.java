@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService {
 
         if(userDTO.getRole() != null) user.setRole(userDTO.getRole());
 
+        if(userDTO.getAvatarUrl() != null) user.setAvatarUrl(userDTO.getAvatarUrl());
+
         User updated = userRepository.save(user);
         return UserMapper.toDTO(updated);
     }

@@ -33,6 +33,8 @@ public class User {
     @JoinColumn(name = "team_id", nullable = true)
     private Team team;
 
+    private String avatarUrl;
+
     @CreatedDate
     @Column(updatable = false, nullable = true)
     private LocalDateTime createdAt;
@@ -60,6 +62,15 @@ public class User {
         this.password = password;
         this.role = role;
         this.team = team;
+    }
+
+    public User(String username, String email, String password, UserRole role, Team team, String avatarUrl) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.team = team;
+        this.avatarUrl = avatarUrl;
     }
 
     public Long getId() {
@@ -112,6 +123,14 @@ public class User {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

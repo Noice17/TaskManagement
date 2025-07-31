@@ -12,6 +12,7 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
+        user.setAvatarUrl(dto.getAvatarUrl());
         return  user;
     }
 
@@ -22,6 +23,7 @@ public class UserMapper {
         user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
         user.setTeam(team);
+        user.setAvatarUrl(dto.getAvatarUrl());
         return user;
     }
 
@@ -37,6 +39,7 @@ public class UserMapper {
         }
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setAvatarUrl(user.getAvatarUrl());
         return dto;
     }
 
