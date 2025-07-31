@@ -51,6 +51,7 @@ public class TeamServiceImpl implements TeamService {
                         );
 
         if(teamDTO.getName() != null) team.setName(teamDTO.getName());
+        if(teamDTO.getImageUrl() != null) team.setImageUrl(teamDTO.getImageUrl());
         Team updated = teamRepository.save(team);
         return TeamMapper.toDTO(updated);
     }

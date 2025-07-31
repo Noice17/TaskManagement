@@ -15,11 +15,19 @@ public class Team {
     @Column(name="team_name", nullable = false, unique = true)
     private String name;
 
+    @Column(name="image_url", nullable = true)
+    private String imageUrl;
+
     public Team() {
     }
 
     public Team(String name) {
         this.name = name;
+    }
+
+    public Team(String name, String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -36,5 +44,13 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
