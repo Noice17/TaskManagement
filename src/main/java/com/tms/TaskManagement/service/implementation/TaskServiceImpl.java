@@ -41,7 +41,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO) {
-//        User user = userRepository.findById(taskDTO.getUserId())
         User user = userRepository.findById(taskDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(
                         messageUtil.getMessage("error.user.not_found", taskDTO.getUserId())
