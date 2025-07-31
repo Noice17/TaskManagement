@@ -23,7 +23,7 @@ public class TeamController {
 
     //Create
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody TeamDTO teamDTO){
         TeamDTO created = teamService.createTeam(teamDTO);
         return ResponseEntity.ok(created);
@@ -44,7 +44,7 @@ public class TeamController {
 
     //Update
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamDTO teamDTO){
         try{
             TeamDTO updated = teamService.updateTeam(id, teamDTO);
@@ -56,7 +56,7 @@ public class TeamController {
 
     //Delete
     @DeleteMapping
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTeam(@PathVariable Long id){
         try{
             teamService.deleteTeam(id);
