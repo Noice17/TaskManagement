@@ -10,6 +10,7 @@ public class TaskMapper {
         Task task = new Task();
         task.setTaskName(dto.getTaskName());
         task.setTaskDescription(dto.getTaskDescription());
+        task.setTaskType(dto.getTaskType());
         task.setDueDate(dto.getDueDate());
         task.setStatus(dto.getStatus());
         return task;
@@ -19,8 +20,9 @@ public class TaskMapper {
         Task task = new Task();
         task.setTaskName(dto.getTaskName());
         task.setTaskDescription(dto.getTaskDescription());
+        task.setTaskType((dto.getTaskType()));
         task.setDueDate(dto.getDueDate());
-        task.setStatus(dto.getStatus());
+        task.setStatus(dto.getStatus() != null ? dto.getStatus() : Task.TaskStatus.ADDED);
         task.setUser(user);
         return task;
     }
@@ -30,6 +32,7 @@ public class TaskMapper {
         dto.setId(task.getId());
         dto.setTaskName(task.getTaskName());
         dto.setTaskDescription(task.getTaskDescription());
+        dto.setTaskType(task.getTaskType());
         dto.setDueDate(task.getDueDate());
         dto.setStatus(task.getStatus());
         if (task.getUser() != null){
