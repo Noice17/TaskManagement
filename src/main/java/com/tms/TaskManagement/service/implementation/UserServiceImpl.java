@@ -15,6 +15,7 @@ import com.tms.TaskManagement.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         if(userRepository.existsByEmail(userDTO.getEmail())){
             throw new EmailAlreadyExistsException(messageUtil.getMessage("error.email.exists", userDTO.getEmail()));
@@ -47,11 +49,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         if(userDTO.getTeamId() != null){
-            Team team = teamRepository.findById(userDTO.getTeamId())
-                    .orElseThrow(() -> new TeamNotFoundException(
-                            messageUtil.getMessage("team.not_found", userDTO.getTeamId())
-                    ));
-            user.setTeam(team);
+            user.setTeam(getTeamById(userDTO.getTeamId()));
         }
 
         User saved = userRepository.save(user);
@@ -59,6 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO updateUser(Long id, UserUpdateDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -71,11 +70,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(userDTO.getTeamId() != null){
-            Team team = teamRepository.findById(userDTO.getTeamId())
-                    .orElseThrow(() -> new TeamNotFoundException(
-                            messageUtil.getMessage("team.not_found", userDTO.getTeamId())
-                    ));
-            user.setTeam(team);
+            user.setTeam(getTeamById(userDTO.getTeamId()));
         }
 
         if(userDTO.getRole() != null) user.setRole(userDTO.getRole());
@@ -101,10 +96,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         if(!userRepository.existsById(id)){
             throw new UserNotFoundException(messageUtil.getMessage("error.user.not_found",id));
         }
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -116,5 +113,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private Team getTeamById(Long teamId){
+        return teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException(
+                        messageUtil.getMessage("team.not_found", teamId)
+                ));
     }
 }

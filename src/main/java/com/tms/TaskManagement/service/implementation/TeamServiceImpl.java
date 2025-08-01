@@ -13,6 +13,7 @@ import com.tms.TaskManagement.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public TeamDTO createTeam(TeamDTO teamDTO) {
         if(teamRepository.existsByName(teamDTO.getName())){
             throw new TeamAlreadyExistsException(messageUtil.getMessage("team.name.exists", teamDTO.getName()));
@@ -44,6 +46,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public TeamDTO updateTeam(Long id, TeamDTO teamDTO) {
         Team team = teamRepository.findById(id)
                 .orElseThrow(() ->
@@ -71,10 +74,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public void deleteTeam(Long id) {
         if(!teamRepository.existsById(id)){
             throw new TeamNotFoundException(messageUtil.getMessage("team.not_found", id));
         }
+        teamRepository.deleteById(id);
     }
 
     @Override
