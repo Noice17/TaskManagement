@@ -84,7 +84,6 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
-    // ✅ New endpoint: get overdue tasks
     @GetMapping("/overdue")
     public ResponseEntity<List<TaskDTO>> getOverdueTasks() {
         List<TaskDTO> tasks = taskService.getOverdueTasks();
