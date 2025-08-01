@@ -29,11 +29,15 @@ public class Task {
     @Column(nullable = false)
     private String taskDescription;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskType taskType;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime dueDate;
 
     @CreatedDate
@@ -43,17 +47,24 @@ public class Task {
     private LocalDateTime updatedAt;
 
 
+
+
     public enum TaskStatus {
-        ASSIGNED, STARTED, ONGOING, COMPLETED, PASSED_DEADLINE
+        ADDED, PENDING, COMPLETED
+    }
+
+    public enum TaskType {
+        PERSONAL, TEAM
     }
 
     public Task() {}
 
-    public Task(Long id, User user, String taskName, String taskDescription, TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Task(Long id, User user, String taskName, String taskDescription, TaskType taskType, TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.user = user;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
+        this.taskType = taskType;
         this.status = status;
         this.dueDate = dueDate;
         this.createdAt = createdAt;
@@ -90,6 +101,14 @@ public class Task {
 
     public void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
     }
 
     public TaskStatus getStatus() {

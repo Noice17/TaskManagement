@@ -14,30 +14,34 @@ public class TaskDTO {
     @NotBlank(message = "task description is required")
     private String taskDescription;
 
+    @NotBlank(message = "task type is required")
+    private Task.TaskType taskType;
+
     @NotBlank(message = "task status is required")
     private Task.TaskStatus status;
 
     private Long userId; //added this to take userId as input
     private String userName;
-
-    @NotBlank(message = "task due date is required")
     private LocalDateTime dueDate;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private double progressPercentage;
 
     public TaskDTO() {}
 
-    public TaskDTO(Long id, String taskName, String taskDescription, Task.TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId, String userName) {
+    public TaskDTO(Long id, String taskName, String taskDescription, Task.TaskType taskType, Task.TaskStatus status, LocalDateTime dueDate, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId, String userName, double progressPercentage) {
         this.id = id;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
+        this.taskType = taskType;
         this.status = status;
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userId = userId;
         this.userName = userName;
+        this.progressPercentage = progressPercentage;
     }
 
     public Long getId() {
@@ -62,6 +66,14 @@ public class TaskDTO {
 
     public void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
+    }
+
+    public Task.TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(Task.TaskType taskType) {
+        this.taskType = taskType;
     }
 
     public Task.TaskStatus getStatus() {
@@ -110,5 +122,13 @@ public class TaskDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public double getProgressPercentage() {
+        return progressPercentage;
+    }
+
+    public void setProgressPercentage(double progressPercentage) {
+        this.progressPercentage = progressPercentage;
     }
 }
