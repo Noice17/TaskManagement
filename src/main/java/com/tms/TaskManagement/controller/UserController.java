@@ -5,6 +5,7 @@ import com.tms.TaskManagement.dto.UserUpdateDTO;
 import com.tms.TaskManagement.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -95,6 +96,13 @@ public class UserController {
     public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication){
         String email = authentication.getName();
         return userService.getUserByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/admin-team/{teamId}")
+    public ResponseEntity<?> getAdminByTeamId(@PathVariable Long teamId){
+        return userService.getAdminByTeamId(teamId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

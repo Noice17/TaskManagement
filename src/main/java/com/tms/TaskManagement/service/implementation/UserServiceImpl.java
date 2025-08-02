@@ -110,9 +110,16 @@ public class UserServiceImpl implements UserService {
                 .map(UserMapper::toDTO);
     }
 
+
     @Override
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<UserDTO> getAdminByTeamId(Long teamId) {
+        return userRepository.getAdminByTeamId(teamId)
+                .map(UserMapper::toDTO);
     }
 
     private Team getTeamById(Long teamId){

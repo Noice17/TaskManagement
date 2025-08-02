@@ -14,4 +14,6 @@ public interface UserService {
     void deleteUser(Long id);
     Optional<UserDTO> getUserByEmail(String email);
     boolean emailExists(String email);
+
+    Optional<UserDTO> getAdminByTeamId(Long teamId);
 }
