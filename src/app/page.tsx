@@ -1,55 +1,28 @@
-'use client';
+"use client";
 
-import Logo from "./GlobalComponent/Logo";
-import MenuIcon from "./GlobalComponent/MenuIcon";
-import HomeIcon from "./GlobalComponent/HomeIcon";
-import AdminSideButton from "./GlobalComponent/AdminSideButton";
-import Header from "./GlobalComponent/Header";
-import MeSideButton from "./GlobalComponent/MeSideButton";
-import UserSideButton from "./GlobalComponent/UserSideButton";
-import LandingComponent from "./UserComponent/LandingComponent";
-import { useState } from "react";
-import TaskTracker from "./UserComponent/TaskTracker";
+import Link from "next/link";
 
 export default function Home() {
-  const [activePage, setActivePage] = useState<'landing' | 'task'>('landing');
-
   return (
-    <div className="w-screen h-screen overflow-x-hidden">
-      <div className="w-full h-full flex flex-row">
-        <div className="w-1/6 bg-black flex flex-col">
-          <div className="w-full h-1/4 border-b border-nuanceDarkPastelBlue">
-            <Logo />
-          </div>
-          <div className="w-full h-3/4 flex flex-col">
-            <div className="h-[40%] p-2 flex flex-col">
-              <div className="h-1/3"
-              onClick={() => setActivePage('landing')}>
-                  <HomeIcon />
-              </div>
-              <div className="h-1/3"
-              onClick={() => setActivePage('task')}>
-                  <MenuIcon />
-              </div>
-            </div>
-            <div className="h-[60%] p-2 flex flex-col space-y-2 overflow-y-auto">
-              <AdminSideButton />
-              <MeSideButton />
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
-            </div>
-          </div>
-        </div>
-        <div className="w-5/6 flex flex-col">
-          <Header />
-          <div className="flex-1 h-0 flex">
-            {activePage === 'landing' ? <LandingComponent /> : <TaskTracker />}
-          </div>
-        </div>
+    <main className="custom-bg flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <img
+        src="/distracklogo.png"
+        alt="DisTrack Logo"
+        className="w-24 h-24 mb-4"
+      />
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">DisTrack</h1>
+      <div className="flex gap-6">
+        <Link href="/user/login">
+          <button className="px-6 py-3 bg-[#f8864f] text-white rounded-md shadow hover:bg-blue-700 transition">
+            I'm a user
+          </button>
+        </Link>
+        <Link href="/admin/login">
+          <button className="px-6 py-3 bg-[#34de8f] text-white rounded-md shadow hover:bg-green-700 transition">
+            I'm an admin
+          </button>
+        </Link>
       </div>
-    </div>
+    </main >
   );
 }
