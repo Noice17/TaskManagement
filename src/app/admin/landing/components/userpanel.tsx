@@ -68,6 +68,9 @@ export default function UserPanel({ user, onLogout, hideUsername = false }: Prop
               {user.email && (
                 <div className="text-gray-400 mb-4">{user.email}</div>
               )}
+              {user.teamName && (
+                <div className="text-gray-400 mb-4">{user.teamName}</div>
+              )}
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white rounded px-5 py-2 font-bold hover:bg-red-700 transition"
