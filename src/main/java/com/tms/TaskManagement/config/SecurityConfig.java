@@ -57,7 +57,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://chic-integrity-production.up.railway.app", "http://localhost:3000, https://distrack-p982m2vhh-jailayos-projects.vercel.app"));
+        config.setAllowedOrigins(List.of("https://chic-integrity-production.up.railway.app", "http://localhost:3000, https://distrack-r4ideum3a-jailayos-projects.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
