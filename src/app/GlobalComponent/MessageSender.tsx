@@ -1,14 +1,20 @@
-export default function MessageSender(){
+import { User } from "../UserComponent/page" 
+
+interface Props {
+  admin: User | null;
+}
+
+export default function MessageSender({ admin }: Props){
     return(
         <div className="py-1">
             <div className="flex flex-row items-center text-white mb-1">
-                <div className="h-[50px] w-[50px] border border-white rounded-full mt-3"></div>
+                <div className="h-[50px] w-[50px] rounded-full mt-3 bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${admin?.avatarUrl || '/pattern.png'})` }}/>
                 <div className="h-full flex flex-col">
                     <div className="flex flex-row font-semibold items-end">
-                        <p className="text-white/70 px-2 pt-2 text-xl">Jai Layos</p>
-                        <p className="text-white/50 pt-2 pb-1 text-sm">DATE HERE</p>
+                        <p className="text-white/70 px-2 pt-2 text-xl">{admin?.username}</p>
                     </div>
-                    <p className="text-white/70 font-light px-2 text-sm">Position here</p>
+                    <p className="text-white/70 font-light px-2 text-sm">Team Leader</p>
                 </div>
                 
             </div>

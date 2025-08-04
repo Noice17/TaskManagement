@@ -1,4 +1,6 @@
 import axios from "axios";
+import { Notification } from "./UserComponent/Announcement";
+
 
 const API_BASE_URL = "https://chic-integrity-production.up.railway.app/api";
 export const fetchTeams = async () => {
@@ -37,8 +39,8 @@ export const login = async (
 };
 
 export const fetchTasks = async () => {
-const response = await axios.get(`${API_BASE_URL}/tasks`);
-return response.data;
+  const response = await axios.get(`${API_BASE_URL}/tasks`);
+  return response.data;
 };
 
 
@@ -61,3 +63,125 @@ export const fetchAllUsers = async () => {
   });
   return response.data;
 };
+
+export const fetchNotifications = async (): Promise<Notification[]> => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_BASE_URL}/notifications`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const fetchPersonalTasks = async (userId: number) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_BASE_URL}/tasks/users/${userId}/personal`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const createPersonalTask = async (userId: number, taskName: string) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.post(
+    `${API_BASE_URL}/tasks/users/${userId}/personal`,
+    {
+      taskName, // Only this is required
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const fetchTaskById = async (id: number) => {
+  const token = localStorage.getItem("token"); // If auth is needed
+  const response = await axios.get(`${API_BASE_URL}/tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const fetchTasksByUserId = async (userId: number) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_BASE_URL}/tasks/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const updateTask = async (task: {
+  id: number;
+  taskName: string;
+  taskDescription: string;
+  createdAt: string;
+  dueDate: string;
+  status: string;
+  userId: number;
+  taskType: string;
+}) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.put(`${API_BASE_URL}/tasks/${task.id}`, task, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const updateTaskStatus = async (taskId: number, status: string) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.put(
+    `${API_BASE_URL}/tasks/${taskId}/status?status=${status}`,
+    null, // No body needed
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const updateCurrentUser = async (
+  userUpdateDTO: {
+    username?: string;
+    email?: string;
+    password?: string;
+    teamId?: number;
+    role?: "ADMIN" | "USER";
+    avatarUrl?: string;
+  },
+  imageFile?: File | null // optional image
+) => {
+  const token = localStorage.getItem("token");
+  const formData = new FormData();
+
+  // Send the user object as JSON string under "user"
+  formData.append("user", new Blob([JSON.stringify(userUpdateDTO)], { type: "application/json" }));
+
+  // Add the image only if present
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const response = await axios.put(`${API_BASE_URL}/users/me`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};
+

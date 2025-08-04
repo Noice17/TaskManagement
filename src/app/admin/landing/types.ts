@@ -10,7 +10,9 @@ export type User = {
   updatedAt: string;
 };
 
-export type TaskStatus = "ASSIGNED" | "STARTED" | "ONGOING" | "COMPLETED" | "PASSED_DEADLINE";
+export type TaskStatus = "ADDED" | "PENDING" | "COMPLETED";
+
+export type TaskType = "TEAM" | "PERSONAL";
 
 export type UserRole = "ADMIN" | "USER";
 
@@ -24,6 +26,7 @@ export type Task = {
   updatedAt: string;
   userId: number;
   userName: string;
+  taskType: TaskType;
 };
 
 export type Team = {

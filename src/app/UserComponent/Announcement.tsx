@@ -1,8 +1,44 @@
 import { HashIcon } from 'lucide-react';
 import AnnouncementItems from './AnnouncementItems';
 import MessageSender from '../GlobalComponent/MessageSender';
+import { User } from './page';
+import { useEffect, useState } from 'react';
+import { fetchNotifications } from '../api';
 
-export default function Announcement() {
+
+interface Props {
+  admin: User | null;
+}
+
+export interface Notification {
+  id: number;
+    createdAt: string;
+    description: string;
+    read: boolean;
+    taskId: number;
+    teamId: number;
+    userId: number;
+    taskName?: string;
+}
+
+
+export default function Announcement({ admin }: Props) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      try {
+        const res = await fetchNotifications(); // ✅ this now refers to the one from api.ts
+        setNotifications(res); // ✅ your api function already returns response.data
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+    }
+
+    loadNotifications();
+  }, []);
+
+
   return (
     <div className="w-full h-full bg-customDarkBlueBG px-3 flex flex-col overflow-hidden">
       <div className="sticky top-0 z-30 bg-customDarkBlueBG text-white pt-2 pb-3">
@@ -21,15 +57,12 @@ export default function Announcement() {
       <div className="flex-1 overflow-y-auto pr-2 space-y">
         <div className="sticky top-0 z-20 bg-customDarkBlueBG">
           <div className="mt-10">
-            <MessageSender />
+            <MessageSender admin={admin}/>
           </div>
         </div>
-        <AnnouncementItems />
-        <AnnouncementItems />
-        <AnnouncementItems />
-        <AnnouncementItems />
-        <AnnouncementItems />
-        <AnnouncementItems />
+        {notifications.map((notif) => (
+          <AnnouncementItems key={notif.id} notification={notif} />
+        ))}
       </div>
     </div>
   );

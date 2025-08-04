@@ -20,11 +20,11 @@ export default function ContentControl({ onChangeView }: Props) {
 
     return (
         <div className="w-full h-full font-montserrat">
-            <div className="w-full h-1/5 bg-white" />
+            <div className="w-full h-1/5 bg-cover bg-no-repeat" 
+            style={{ backgroundImage: "url('/pattern.png')" }}/>
             <div className="w-full h-4/5 flex flex-col">
                 <p className="font-bold text-lg text-white/60 border-y border-nuanceDarkPastelBlue py-1 px-3">TEAM NAME</p>
 
-                {/* Announcement Section */}
                 <button
                     onClick={() => toggleMenu('announcement')}
                     className="text-white/60 px-4 py-2 flex items-center gap-2 w-full text-left"

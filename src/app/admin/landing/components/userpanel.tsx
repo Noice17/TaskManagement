@@ -16,7 +16,7 @@ export default function UserPanel({ user, onLogout, hideUsername = false }: Prop
 
   const handleLogout = () => {
     onLogout();
-    router.push("/");
+    router.push("/welcome");
   };
   
   return (

@@ -10,7 +10,9 @@ import UserSideButton from "../GlobalComponent/UserSideButton";
 import LandingComponent from "./LandingComponent";
 import { useState, useEffect } from "react";
 import TaskTracker from "./TaskTracker";
-import { fetchCurrentUser, fetchAllUsers } from "../api";
+import { fetchCurrentUser, fetchAllUsers, updateCurrentUser } from "../api";
+import AvatarModal from "./AvatarModal";
+import TeamAssignmentModal from "./TeamAssignmentModal";
 
 export interface User {
   id: number;
@@ -18,19 +20,58 @@ export interface User {
   email: string;
   role: string;
   teamId: number;
+  avatarUrl: string;
 }
 
 
 export default function Home() {
   const [activePage, setActivePage] = useState<'landing' | 'task'>('landing');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [admin, setAdmin] = useState<User | null>(null);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [showTeamModal, setShowTeamModal] = useState(false);
+
+
+  const handleAvatarSelection = async (url: string, imageFile?: File | null) => {
+    if (!user) return;
+
+    const updatedUser = {
+      ...user,
+      avatarUrl: url,
+      role: user.role as "ADMIN" | "USER",
+    };
+
+    try {
+      const updated = await updateCurrentUser(updatedUser, imageFile);
+      setUser(updated);
+      setShowAvatarModal(false);
+    } catch (error) {
+      console.error("Failed to update avatar:", error);
+    }
+  };
+
+  const handleTeamModalAcknowledge = () => {
+    localStorage.removeItem("token");
+    window.location.reload(); // or use router.push("/login") if using Next.js routing
+  };
+
 
   useEffect(() => {
     fetchCurrentUser()
       .then(async (data) => {
         setUser(data);
-        console.log("Current user:", data); 
+        if (data.teamId === null) {
+          setShowTeamModal(true);
+          return;
+        }
+
+        console.log("Current user:", data);
+
+        if (!data.avatarUrl || data.avatarUrl === "null") {
+          setShowAvatarModal(true);
+        }
+
         try {
           const allUsers = await fetchAllUsers();
 
@@ -38,16 +79,28 @@ export default function Home() {
             u.teamId === data.teamId && u.role === "ADMIN"
           );
           setAdmin(teamAdmin || null);
-          console.log("User's Admin: ", teamAdmin)
+
+          const members = allUsers.filter(
+            (u: User) =>
+              u.teamId === data.teamId &&
+              u.role === "USER" &&
+              u.id !== data.id
+          );
+
+          setTeamMembers(members);
+
+          console.log("User's Admin: ", teamAdmin);
+          console.log("Team Members: ", members);
         } catch (err) {
           console.error("Failed to fetch all users", err);
         }
+
       })
       .catch((err) => {
         console.error("Failed to fetch user", err);
       });
-  }, []);
 
+  }, []);
 
   if (!user) return <div>Loading...</div>;
 
@@ -70,23 +123,34 @@ export default function Home() {
               </div>
             </div>
             <div className="h-[60%] p-2 flex flex-col space-y-2 overflow-y-auto">
-              <AdminSideButton admin={admin}/>
-              <MeSideButton user={user}/>
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
-              <UserSideButton />
+              <AdminSideButton admin={admin} />
+              <MeSideButton user={user} />
+              {teamMembers.map((member) => (
+                <UserSideButton key={member.id} user={member} />
+              ))}
+
             </div>
+
           </div>
         </div>
         <div className="w-5/6 flex flex-col">
           <Header user={user} />
           <div className="flex-1 h-0 flex">
-            {activePage === 'landing' ? <LandingComponent /> : <TaskTracker />}
+            {activePage === 'landing' ? (
+              <LandingComponent admin={admin} user={user} />
+            ) : (
+              <TaskTracker admin={admin} user={user} />
+            )}
           </div>
         </div>
       </div>
+      {showAvatarModal && (
+        <AvatarModal onSelect={handleAvatarSelection} />
+      )}
+      {showTeamModal && 
+      <TeamAssignmentModal onAcknowledge={handleTeamModalAcknowledge} />}
+
     </div>
+
   );
 }

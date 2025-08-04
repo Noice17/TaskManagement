@@ -5,18 +5,25 @@ import ContentControl from "../GlobalComponent/ContentControl";
 import Announcement from "./Announcement";
 import Dashboard from "./Dashboard";
 import Tasks from "./Tasks";
+import { User } from "./page";
 
-export default function LandingComponent() {
+interface Props {
+  admin: User | null;
+  user: User;
+}
+
+
+export default function LandingComponent({ admin, user }: Props) {
     const [currentView, setCurrentView] = useState("announcement");
 
     const renderView = () => {
         switch (currentView) {
             case "dashboard":
-                return <Dashboard />;
+                return <Dashboard admin={admin}/>;
             case "tasklist":
-                return <Tasks />
+                return <Tasks user={user} />
             default:
-                return <Announcement />;
+                return <Announcement admin={admin}/>;
         }
     };
 

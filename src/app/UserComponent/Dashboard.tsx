@@ -1,45 +1,99 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Gantt from "frappe-gantt";
 import { HashIcon } from "lucide-react";
 import DashboardCards from "./DashboardCards";
+import { fetchTasksByUserId } from "../api";
+import { User } from "../UserComponent/page";
 
-export default function Dashboard() {
+interface Props {
+    admin: User | null;
+}
+
+export default function Dashboard({ admin }: Props) {
     const ganttRef = useRef<HTMLDivElement | null>(null);
+    const [upcomingTask, setUpcomingTask] = useState<any>(null);
+    const [latestTask, setLatestTask] = useState<any>(null);
+    const [pendingCount, setPendingCount] = useState(0);
+    const [finishedCount, setFinishedCount] = useState(0);
+
     useEffect(() => {
-        const ganttEl = ganttRef.current;
-        if (!ganttEl) return;
+        if (!admin?.id) return;
 
-        ganttEl.innerHTML = "";
+        const loadTaskName = async () => {
+            try {
+                const tasks = await fetchTasksByUserId(admin.id);
+                const today = new Date();
 
-        const tasks = [
-            {
-                id: "Task 1",
-                name: "Create wireframes",
-                start: "2025-08-01",
-                end: "2025-08-10",
-                progress: 45,
-            },
-            {
-                id: "Task 2",
-                name: "Build frontend",
-                start: "2025-08-02",
-                end: "2025-08-09",
-                progress: 20,
-            },
-            {
-                id: "Task 3",
-                name: "Build backend",
-                start: "2025-08-02",
-                end: "2025-08-09",
-                progress: 75,
-            },
-        ];
+                let pending = 0;
+                let finished = 0;
+                let closestTask = null;
+                let smallestDiff = Infinity;
 
-        new Gantt(ganttEl, tasks, {
-            view_mode: "Day",
-            custom_popup_html: null,
-        });
-    }, []);
+                const tasksFormatted = tasks.map((task: any) => {
+                    const start = new Date(task.createdAt);
+                    const end = new Date(task.dueDate);
+
+                    if (task.status === "PENDING" || task.status === "ADDED") pending++;
+                    else if (task.status === "COMPLETED") finished++;
+
+
+                    // Find closest upcoming task
+                    const timeDiff = end.getTime() - today.getTime();
+                    if (timeDiff > 0 && timeDiff < smallestDiff) {
+                        smallestDiff = timeDiff;
+                        closestTask = task;
+                    }
+
+                    let progress = 0;
+                    if (today >= end) progress = 100;
+                    else if (today <= start) progress = 0;
+                    else {
+                        const total = end.getTime() - start.getTime();
+                        const elapsed = today.getTime() - start.getTime();
+                        progress = Math.round((elapsed / total) * 100);
+                    }
+
+                    return {
+                        id: task.id.toString(),
+                        name: task.taskName,
+                        start: start.toISOString().split("T")[0],
+                        end: end.toISOString().split("T")[0],
+                        progress,
+                    };
+                });
+
+                setPendingCount(pending);
+                setFinishedCount(finished);
+                setUpcomingTask(closestTask);
+
+                if (ganttRef.current) {
+                    ganttRef.current.innerHTML = "";
+                    new Gantt(ganttRef.current, tasksFormatted, {
+                        view_mode: "Day",
+                        custom_popup_html: null,
+                    });
+                    setTimeout(() => {
+                        ganttRef.current?.scrollTo({
+                            left: 1000, 
+                            behavior: "smooth",
+                        });
+                    }, 100);
+                }
+                if (tasks.length > 0) {
+                    const latest = tasks.reduce((latestSoFar: any, current: any) => {
+                        return new Date(current.createdAt) > new Date(latestSoFar.createdAt) ? current : latestSoFar;
+                    }, tasks[0]);
+                    setLatestTask(latest);
+                }
+            } catch (error) {
+                console.error("Failed to fetch task by ID:", error);
+            }
+        };
+
+        loadTaskName();
+
+
+    }, [admin?.id]);
 
     return (
         <div className="w-full h-full px-3 flex flex-col space-y-3">
@@ -54,15 +108,18 @@ export default function Dashboard() {
                     This is where the team lead’s set deadline will be announced
                 </p>
             </div>
+
             <div className="flex-1 overflow-y-auto pr-2 space-y">
-                <div className="w-11/12 overflow-x-hidden bg-[#292b3c] 
-                rounded-xl shadow-lg text-white mx-auto mt-2">
+                <div className="w-11/12 overflow-x-hidden bg-[#292b3c] rounded-xl shadow-lg text-white mx-auto mt-2">
                     <div ref={ganttRef} className="gantt-target overflow-auto p-3" />
                 </div>
-                <DashboardCards />
+                <DashboardCards
+                    upcomingTask={upcomingTask}
+                    latestTask={latestTask}
+                    pendingCount={pendingCount}
+                    finishedCount={finishedCount}
+                />
             </div>
-
         </div>
-
     );
 }
