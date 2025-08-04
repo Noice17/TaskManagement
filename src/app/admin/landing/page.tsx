@@ -11,7 +11,7 @@ import TaskEditModal from "./components/taskedit";
 import AddTeamModal from "./components/addteam";
 import EditTeamModal from "./components/editteam";
 import { User, Task, Team, UserRole } from "./types";
-import { fetchTasks, fetchTeams, fetchUsers } from "@/app/api";
+import { getTasks, getTeams, getUsers } from "@/app/api";
 import { useCurrentUser } from "@/app/hooks/currentuser";
 import axios from "axios";
 
@@ -42,9 +42,9 @@ export default function AdminLanding() {
 
   useEffect(() => {
     if (!user) return;
-    fetchTeams().then(setTeams);
-    fetchUsers().then(setUsers);
-    fetchTasks().then(setTasks);
+    getTeams().then(setTeams);
+    getUsers().then(setUsers);
+    getTasks().then(setTasks);
   }, [user]);
 
   const handleUserUpdate = async ({

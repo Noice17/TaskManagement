@@ -102,7 +102,11 @@ export default function Home() {
 
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return (
+      <main className="flex min-h-screen bg-[#151727] items-center justify-center">
+        <div className="text-white text-2xl">Loading...</div>
+      </main>
+    );;
 
   return (
     <div className="w-screen h-screen overflow-x-hidden">

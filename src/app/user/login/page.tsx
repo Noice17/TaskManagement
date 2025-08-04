@@ -16,7 +16,6 @@ export default function UserLogin() {
     try {
       const data = await login(email, password);
       localStorage.setItem("token", data.token);
-      alert(`Token: ${data.token}`);
       router.push("/UserComponent");
     } catch (err: any) {
       setError("Invalid credentials. Please try again.");

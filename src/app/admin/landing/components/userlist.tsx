@@ -31,7 +31,7 @@ export default function UserList({ users, onSelect }: UserListProps) {
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={user.avatarUrl}
+                  src={user.avatarUrl || "/pattern.png"}
                   alt={user.username}
                   className="w-8 h-8 rounded-full object-cover border border-gray-700"
                 />

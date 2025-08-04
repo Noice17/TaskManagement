@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { HashIcon } from 'lucide-react';
 
-type Props = {
-    onChangeView: (view: string) => void;
-};
+interface Props {
+  onChangeView: (view: string) => void;
+  user: any;
+}
 
-export default function ContentControl({ onChangeView }: Props) {
+export default function ContentControl({ onChangeView, user }: Props) {
     const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({
         announcement: true,
         tools: true,
@@ -23,7 +24,8 @@ export default function ContentControl({ onChangeView }: Props) {
             <div className="w-full h-1/5 bg-cover bg-no-repeat" 
             style={{ backgroundImage: "url('/pattern.png')" }}/>
             <div className="w-full h-4/5 flex flex-col">
-                <p className="font-bold text-lg text-white/60 border-y border-nuanceDarkPastelBlue py-1 px-3">TEAM NAME</p>
+                <p className="font-bold text-lg text-white/60 border-y border-nuanceDarkPastelBlue py-1 px-3">
+                Team {user?.teamName || "TBA"}</p>
 
                 <button
                     onClick={() => toggleMenu('announcement')}

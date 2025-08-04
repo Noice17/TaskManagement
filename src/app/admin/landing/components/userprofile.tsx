@@ -55,17 +55,20 @@ export default function UserProfile({
 
   const avatarBlock = previewUrl
     ? (
-        <img
-          src={previewUrl}
-          alt={username}
-          className="w-24 h-24 rounded-full object-cover mb-6 border-4 border-gray-700"
-        />
-      )
+      <img
+        src={previewUrl}
+        alt={username}
+        className="w-24 h-24 rounded-full object-cover mb-6 border-4 border-gray-700"
+      />
+    )
     : (
-        <div className="w-24 h-24 rounded-full bg-gray-700 mb-6 flex items-center justify-center text-gray-300 text-3xl border-4 border-gray-700">
-          {username?.charAt(0).toUpperCase() ?? "?"}
-        </div>
-      );
+      <img
+        src="/pattern.png"
+        alt="Default Avatar"
+        className="w-24 h-24 rounded-full object-cover mb-6 border-4 border-gray-700"
+      />
+    );
+
 
   return (
     <section className="flex-1 bg-[#23243a] flex items-center justify-center h-screen">

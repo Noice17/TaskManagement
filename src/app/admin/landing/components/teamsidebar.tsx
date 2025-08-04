@@ -22,7 +22,7 @@ export default function TeamSidebar({ teams, onSelect, onAddTeam }: TeamSidebarP
               onClick={() => onSelect(team)}
             >
               <img
-                src={team.imageUrl}
+                src={team.imageUrl || "/pattern.png"}
                 alt={team.name}
                 className="w-12 h-12 rounded-full object-cover border-2 border-gray-700 transition duration-200"
               />

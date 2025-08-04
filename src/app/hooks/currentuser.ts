@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { User } from "../admin/landing/types";
 
-export function useCurrentUser(): User {
+export function useCurrentUser(): { user: User | null, loading: boolean } {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -22,8 +22,5 @@ export function useCurrentUser(): User {
       .finally(() => setLoading(false));
   }, [router]);
 
-  if (loading) throw new Error("Loading...");
-  if (!user) throw new Error("No user found");
-
-  return user;
+  return { user, loading };
 }

@@ -185,3 +185,31 @@ export const updateCurrentUser = async (
   return response.data;
 };
 
+function getToken() {
+  return localStorage.getItem("token");
+}
+ 
+export const getTeams = async () => {
+  const token = getToken();
+  const response = await axios.get(`${API_BASE_URL}/teams`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+ 
+export const getUsers = async () => {
+  const token = getToken();
+  const response = await axios.get(`${API_BASE_URL}/users`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+ 
+export const getTasks = async () => {
+  const token = getToken();
+  const response = await axios.get(`${API_BASE_URL}/tasks`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
