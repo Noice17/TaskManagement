@@ -99,6 +99,30 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping(path = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserDTO> updateCurrentUser(
+            Authentication authentication,
+            @Valid @RequestPart("user") UserUpdateDTO userDTO,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        try {
+            String email = authentication.getName();
+            UserDTO currentUser = userService.getUserByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            if (image != null && !image.isEmpty()) {
+                userDTO.setAvatarUrl(saveImage(image)); // Same method as in your admin controller
+            }
+
+            UserDTO updated = userService.updateUser(currentUser.getId(), userDTO);
+            return ResponseEntity.ok(updated);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     //Helper
     private String saveImage(MultipartFile file) throws  IOException{
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();

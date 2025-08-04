@@ -89,16 +89,5 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<UserDTO> updateCurrentUser(Authentication authentication, @Valid @RequestBody UserUpdateDTO userDTO){
-        try{
-            String email = authentication.getName();
-            UserDTO currentUser = userService.getUserByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-            UserDTO updated = userService.updateUser(currentUser.getId(), userDTO);
-            return ResponseEntity.ok(updated);
-        }catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 }
