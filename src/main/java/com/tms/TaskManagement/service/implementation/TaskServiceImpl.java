@@ -14,10 +14,13 @@ import com.tms.TaskManagement.service.TaskService;
 import com.tms.TaskManagement.util.MessageUtil;
 import com.tms.TaskManagement.util.NotificationsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,23 +44,32 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO) {
-        User user = userRepository.findById(taskDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        messageUtil.getMessage("error.user.not_found", taskDTO.getUserId())
-                ));
+    public List<TaskDTO> createTask(TaskDTO taskDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        Team team = teamRepository.findById(user.getTeam().getId())
-                .orElseThrow(() -> new TeamNotFoundException(
-                        messageUtil.getMessage("team.not_found", user.getTeam().getId())
-                ));
+        Team team = user.getTeam();
+        if (team == null) {
+            throw new RuntimeException("Admin has no team assigned.");
+        }
 
-        Task task = TaskMapper.toEntity(taskDTO, user);
-        Task saved = taskRepository.save(task);
+        List<User> teamMembers = userRepository.findByTeam(team);
 
-        notifTask(user.getId(), team.getId(), saved.getId(), messageUtil.getMessage("task.created"), false);
-        return TaskMapper.toDTO(saved);
+        List<TaskDTO> createdTasks = new ArrayList<>();
+        for (User member : teamMembers) {
+            Task task = TaskMapper.toEntity(taskDTO);
+            task.setUser(member);
+            Task saved = taskRepository.save(task);
+            createdTasks.add(TaskMapper.toDTO(saved));
+        }
+
+        return createdTasks;
     }
+
+
+
+
+
 
     @Override
     public TaskDTO createPersonalTask(Long userId, TaskDTO taskDTO) {
@@ -103,16 +115,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    @Override
-    public TaskDTO updateTaskStatus(Long taskId, Task.TaskStatus newStatus) {
+    public TaskDTO updateTaskStatus(Long taskId, Long userId, Task.TaskStatus newStatus) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException(
-                        messageUtil.getMessage("error.task.not_found", taskId)));
+                .filter(t -> t.getUser().getId().equals(userId))
+                .orElseThrow(() -> new RuntimeException("Task not found or not assigned to the user"));
 
         task.setStatus(newStatus);
         Task updatedTask = taskRepository.save(task);
         return TaskMapper.toDTO(updatedTask);
     }
+
 
     @Override
     public void deleteTask(Long id) {

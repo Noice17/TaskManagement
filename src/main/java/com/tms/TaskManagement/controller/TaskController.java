@@ -6,6 +6,8 @@ import com.tms.TaskManagement.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,10 +26,14 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
-        TaskDTO createdTask = taskService.createTask(taskDTO);
-        return ResponseEntity.ok(createdTask);
+    public ResponseEntity<List<TaskDTO>> createTask(@RequestBody TaskDTO taskDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Gets the logged-in user's email
+
+        List<TaskDTO> createdTasks = taskService.createTask(taskDTO, email);
+        return ResponseEntity.ok(createdTasks);
     }
+
 
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable("taskId") Long id, @RequestBody TaskDTO taskDTO) {
@@ -39,8 +45,9 @@ public class TaskController {
     @PutMapping("/{taskId}/status")
     public ResponseEntity<TaskDTO> updateTaskStatus(
             @PathVariable Long taskId,
+            @PathVariable Long userId,
             @RequestParam Task.TaskStatus status) {
-        TaskDTO updated = taskService.updateTaskStatus(taskId, status);
+        TaskDTO updated = taskService.updateTaskStatus(taskId, userId, status);
         return ResponseEntity.ok(updated);
     }
 

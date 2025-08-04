@@ -78,12 +78,14 @@ class TaskServiceImplTest {
         when(teamRepository.findById(2L)).thenReturn(Optional.of(team));
         when(taskRepository.save(any())).thenReturn(task);
 
-        assertNotNull(taskService.createTask(dto));
+        List<TaskDTO> result = taskService.createTask(dto, null);
+        assertNotNull(result);
+        assertEquals(1, result.size());
     }
+
 
     @Test
     void testCreateTaskMissingTitle_TC005() {
-        // Arrange
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setUserId(1L);
 
@@ -102,9 +104,10 @@ class TaskServiceImplTest {
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
         when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
 
-        TaskDTO result = taskService.createTask(taskDTO);
-
-        assertNull(result.getTaskName());
+        List<TaskDTO> result = taskService.createTask(taskDTO, null);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertNull(result.get(0).getTaskName());
     }
 
 
@@ -189,8 +192,9 @@ class TaskServiceImplTest {
         when(teamRepository.findById(2L)).thenReturn(Optional.of(team));
         when(taskRepository.save(any())).thenThrow(new RuntimeException("Too long"));
 
-        assertThrows(RuntimeException.class, () -> taskService.createTask(dto));
+        assertThrows(RuntimeException.class, () -> taskService.createTask(dto, null));
     }
+
 
     @Test
     void testGetAllTasksAfterCreate_TC011() {

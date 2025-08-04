@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
-    TaskDTO createTask(TaskDTO taskDTO);
+    List<TaskDTO> createTask(TaskDTO taskDTO, String email);
     TaskDTO updateTask(TaskDTO taskDTO);
     void deleteTask(Long id);
     Optional<TaskDTO> getTaskById(Long id);
@@ -17,7 +17,7 @@ public interface TaskService {
     List<TaskDTO> getTasksByUserId(Long userId);
     List<TaskDTO> getTasksByTeamId(Long id);
     List<TaskDTO> getTasksByStatusAndUserId(String status, Long userId);
-    TaskDTO updateTaskStatus(Long taskId, Task.TaskStatus newStatus);
+    TaskDTO updateTaskStatus(Long taskId, Long userId,Task.TaskStatus newStatus);
     void markTaskAsDone(Long taskId);
     List<TaskDTO> getOverdueTasks();
     List<TaskDTO> getPersonalTasks(Long userId);
