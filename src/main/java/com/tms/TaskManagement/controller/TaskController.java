@@ -29,8 +29,8 @@ public class TaskController {
         return ResponseEntity.ok(createdTask);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable("taskId") Long id, @RequestBody TaskDTO taskDTO) {
         taskDTO.setId(id);
         TaskDTO updatedTask = taskService.updateTask(taskDTO);
         return ResponseEntity.ok(updatedTask);
@@ -109,8 +109,5 @@ public class TaskController {
         TaskDTO createdTask = taskService.createPersonalTask(userId, taskDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
-
-
-
 
 }

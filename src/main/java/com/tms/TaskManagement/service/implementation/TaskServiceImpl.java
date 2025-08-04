@@ -84,15 +84,24 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task with ID " + taskDTO.getId() + " does not exist.");
         }
 
+        Task existingTask = taskRepository.findById(taskDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with ID: " + taskDTO.getId()));
+
         User user = userRepository.findById(taskDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(
                         messageUtil.getMessage("error.user.not_found", taskDTO.getUserId())
                 ));
 
-        Task task = TaskMapper.toEntity(taskDTO, user);
-        Task updated = taskRepository.save(task);
+        existingTask.setTaskName(taskDTO.getTaskName());
+        existingTask.setTaskDescription(taskDTO.getTaskDescription());
+        existingTask.setDueDate(taskDTO.getDueDate());
+        existingTask.setStatus(taskDTO.getStatus());
+        existingTask.setCreatedAt(taskDTO.getCreatedAt());
+
+        Task updated = taskRepository.save(existingTask);
         return TaskMapper.toDTO(updated);
     }
+
 
     @Override
     public TaskDTO updateTaskStatus(Long taskId, Task.TaskStatus newStatus) {
