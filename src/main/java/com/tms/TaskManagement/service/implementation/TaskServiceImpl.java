@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
         existingTask.setTaskDescription(taskDTO.getTaskDescription());
         existingTask.setDueDate(taskDTO.getDueDate());
         existingTask.setStatus(taskDTO.getStatus());
-        existingTask.setCreatedAt(taskDTO.getCreatedAt());
+//        existingTask.setCreatedAt(taskDTO.getCreatedAt());
 
         Task updated = taskRepository.save(existingTask);
         return TaskMapper.toDTO(updated);
